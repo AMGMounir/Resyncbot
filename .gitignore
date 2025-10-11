@@ -1,0 +1,66 @@
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+*.so
+
+# Distribution / packaging
+build/
+dist/
+wheels/
+*.egg-info/
+.eggs/
+*.manifest
+*.spec
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+.ENV/
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Logs and local state
+*.log
+*.pid
+*.sqlite3
+*.db
+
+# dotenv - IMPORTANT: never commit real credentials
+.env
+.env.*
+!.env.example
+
+# VSCode settings
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary
+*.bak
+*.swp
+*.tmp
+
+# SQL files
+*.sql
+!database/resyncbot_init.sql
+
+# Database backups
+*.dump
+*.backup
+
+# Python cache
+*.pyc
+__pycache__/
+
+# Data directories
+data/servers.json
+# logs/
+
+# Railway/deployment specific
+railway_full_dump.sql
