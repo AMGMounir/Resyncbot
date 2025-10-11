@@ -35,6 +35,9 @@ cd resyncbot
 # Create a virtual environment (recommended)
 python -m venv venv
 
+# Or on Linux
+python3 -m venv venv
+
 # Activate virtual environment
 # On Windows:
 venv\Scripts\activate
@@ -52,18 +55,47 @@ pip install -r requirements.txt
 - **Ubuntu/Debian**: `sudo apt install postgresql postgresql-contrib`
 - **Windows**: Download from [postgresql.org](https://www.postgresql.org/download/windows/)
 
-**Create and initialize the database:**
+### 3. Set Up PostgreSQL Database
 
+**Install PostgreSQL:**
+- **macOS**: `brew install postgresql && brew services start postgresql`
+- **Ubuntu/Debian**: `sudo apt install postgresql postgresql-contrib`
+- **Windows**: Download from [postgresql.org](https://www.postgresql.org/download/windows/)
+
+**Create a PostgreSQL user and database:**
+
+**On Linux/macOS:**
 ```bash
-# Create database
-createdb resyncbot
+# Switch to postgres user and create your database
+sudo -u postgres psql
 
-# Import schema and seed data (includes 10,000 tracks)
-psql -d resyncbot -f database/resyncbot_init.sql
+# Inside psql, run these commands:
+CREATE USER resyncbot_user WITH PASSWORD 'your_secure_password';
+CREATE DATABASE resyncbot OWNER resyncbot_user;
+GRANT ALL PRIVILEGES ON DATABASE resyncbot TO resyncbot_user;
+\q
+
+# Now import the schema (using your new user)
+psql -U resyncbot_user -d resyncbot -f database/resyncbot_init.sql
+# Enter the password when prompted
 ```
+On Windows (PowerShell):
+```bash
+powershell # Open psql (will prompt for the postgres password you set during installation)
+psql -U postgres
 
-**Alternative:** You can use hosted PostgreSQL services like [Railway](https://railway.app/), [Supabase](https://supabase.com/), or [Neon](https://neon.tech/). Just update your `DATABASE_URL` in `.env` with their connection string.
+# Inside psql, run these commands:
+CREATE USER resyncbot_user WITH PASSWORD 'your_secure_password';
+CREATE DATABASE resyncbot OWNER resyncbot_user;
+ALTER DATABASE resyncbot OWNER TO resyncbot_user;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO resyncbot_user;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO resyncbot_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO resyncbot_user;
+\q
 
+# Import the schema
+psql -U resyncbot_user -d resyncbot -f database/resyncbot_init.sql
+```
 ### 4. Create Your Discord Bot
 
 Follow Discord's official guide to create a bot application:
@@ -73,13 +105,9 @@ Follow Discord's official guide to create a bot application:
 **Quick summary:**
 1. Go to [Discord Developer Portal](https://discord.com/developers/applications)
 2. Click "New Application" and give it a name
-3. Go to the "Bot" tab and click "Add Bot"
+3. Go to the "Bot" tab and click "Reset Token"
 4. Under "Token", click "Copy" to save your bot token
-5. Enable the following Privileged Gateway Intents:
-   - Server Members Intent
-   - Message Content Intent
-   - Presence Intent
-6. Go to "OAuth2" > "URL Generator":
+5. Go to "OAuth2" > "URL Generator":
    - Select scopes: `bot`, `applications.commands`
    - Select necessary bot permissions (Administrator for full functionality)
    - Copy the generated URL and open it to invite the bot to your server
@@ -88,24 +116,30 @@ Follow Discord's official guide to create a bot application:
 
 ```bash
 # Copy the example environment file
+
+# LINUX:
 cp .env.example .env
+
+# POWERSHELL
+copy .env.example .env
 ```
 
-**Edit `.env` and add your bot token:**
+**Edit `.env` and add your bot token as well as your database URL:**
 
 ```env
 DISCORD_BOT_TOKEN=your_bot_token_from_step_4
-DATABASE_URL=postgresql://postgres:password@localhost:5432/resyncbot
+
+# Database connection - UPDATE THIS with your actual password
+# Format: postgresql://username:password@host:port/database
+DATABASE_URL=postgresql://resyncbot_user:your_secure_password@localhost:5432/resyncbot
+
+# Resync API
 RESYNC_API_BASE=http://localhost:8000
 DEBUG_MODE=true
 ```
-### 6. (Optional) Setup YouTube Cookies
+### 6. Setup YouTube Cookies
 
-**Most users can skip this step!** Cookies are only needed if you encounter issues with certain YouTube videos.
-
-yt-dlp can download most YouTube videos without authentication. However, if you need to access age-restricted, private, or region-locked videos, you'll need to provide cookies:
-
-1. Create `data/cookies.txt` in your project directory
+1. Create `backend/cookies.txt` in your project directory
 2. Export your YouTube cookies using a browser extension like [Cookie Editor](https://chromewebstore.google.com/detail/cookie-editor/hlkenndednhfkekhgcdicdfddnkalmdm)
 3. Paste the cookies into `data/cookies.txt`
 
@@ -135,10 +169,20 @@ If you skip this step, ResyncBot will work fine - you just won't be able to use 
 You need to run both the API backend and the bot:
 
 ```bash
-# Terminal 1 - Start the API backend
-python resync_api.py
+## Terminal 1 - Start the API backend (from root)
+
+# LINUX:
+python3 backend/resync_api.py
+
+# WINDOWS/POWERSHELL:
+python backend/resync_api.py
 
 # Terminal 2 - Start the bot
+
+# LINUX:
+python3 main.py
+
+# WINDOWS/POWERSHELL
 python main.py
 ```
 
@@ -152,7 +196,7 @@ API Error: ⚠️ An unexpected error occurred: Cannot connect to host resync-bo
 
 ### 9. Test Your Bot
 
-Once both services are running, go to your Discord server and try using ResyncBot commands! If everything is set up correctly, the bot should respond to commands.
+Once both services are running, go to your Discord server and try using ResyncBot commands! If everything is set up correctly, the bot should respond to commands. Keep in mind it may take a while for the commands to load, if you want to load them instantly, just reinvite the bot to your discord server via the OAuth link in the discord developer portal.
 
 ## Project Structure
 
