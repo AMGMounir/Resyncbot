@@ -217,7 +217,7 @@ See [database/README.md](database/README.md) for detailed database documentation
 
 ## Contributing
 
-Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+Contributions are welcome! Please see [CONTRIBUTING.md](Contributing.md) for guidelines.
 
 ## Support
 
