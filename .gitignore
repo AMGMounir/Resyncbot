@@ -64,3 +64,6 @@ data/servers.json
 
 # Railway/deployment specific
 railway_full_dump.sql
+
+cookies.txt
+backend/cookies.txt
