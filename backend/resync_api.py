@@ -368,6 +368,8 @@ def resyncmp4():
 
         success, error_msg = download_audio(audio_url, audio_path, logger, cookiefile)
         if not success:
+            if any(keyword in error_msg for keyword in ['bot', 'authentication', 'cookies']):
+                raise ProcessingError("COOKIES_ERROR", "⚠️ Spotify links are temporarily unavailable due to authentication issues. Please try using soundcloud link or an mp3 upload. We're working on a fix!")
             raise ProcessingError(f"Audio download failed: {error_msg}", format_resync_error(error_msg))
         
         # Get durations for validation
@@ -677,6 +679,8 @@ def resyncmedia():
                         raise ProcessingError("VIDEO_NOT_FOUND", "🔗 Video not found or unavailable. Please check your video link.")
                     elif any(keyword in error_str for keyword in ['unsupported', 'no suitable formats']):
                         raise ProcessingError("VIDEO_UNSUPPORTED", "🔗 Unsupported video source or format. Please try a different video.")
+                    elif any(keyword in error_str for keyword in ['bot', 'authentication', 'cookies']):
+                        raise ProcessingError("COOKIES_ERROR", "⚠️ YouTube videos are temporarily unavailable due to authentication issues. Please try using a file upload or a different video source for now. We're working on a fix!")
                     else:
                         raise ProcessingError("VIDEO_ACCESS_FAILED", f"🔗 Could not access video: {str(e)}")
                 except Exception as e:
@@ -809,8 +813,9 @@ def resyncmedia():
 
             cookiefile = get_cookiefile_for_url(audio_url)
             success, error_msg = download_audio(audio_url, audio_path, logger, cookiefile)
-
             if not success:
+                if any(keyword in error_msg for keyword in ['bot', 'authentication', 'cookies']):
+                    raise ProcessingError("COOKIES_ERROR", "⚠️ Spotify links are temporarily unavailable due to authentication issues. Please try using soundcloud link or an mp3 upload. We're working on a fix!")
                 raise ProcessingError(f"Audio download failed: {error_msg}", format_resync_error(error_msg))
 
             # Validate time ranges
@@ -1173,6 +1178,8 @@ def resyncrandommedia():
                         raise ProcessingError("VIDEO_NOT_FOUND", "🔗 Video not found or unavailable. Please check your video link.")
                     elif any(keyword in error_str for keyword in ['unsupported', 'no suitable formats']):
                         raise ProcessingError("VIDEO_UNSUPPORTED", "🔗 Unsupported video source or format. Please try a different video.")
+                    elif any(keyword in error_str for keyword in ['bot', 'authentication', 'cookies']):
+                        raise ProcessingError("COOKIES_ERROR", "⚠️ YouTube videos are temporarily unavailable due to authentication issues. Please try using a file upload or a different video source for now. We're working on a fix!")
                     else:
                         raise ProcessingError("VIDEO_ACCESS_FAILED", f"🔗 Could not access video: {str(e)}")
                 except Exception as e:
@@ -1487,8 +1494,9 @@ def autoresyncmp4():
             if 'youtube.com' in audio_url or 'youtu.be' in audio_url:
                 cookiefile = get_cookiefile_for_url(audio_url)
             success, error_msg = download_audio(audio_url, audio_path, logger, cookiefile)
-
             if not success:
+                if any(keyword in error_msg for keyword in ['bot', 'authentication', 'cookies']):
+                    raise ProcessingError("COOKIES_ERROR", "⚠️ Spotify links are temporarily unavailable due to authentication issues. Please try using soundcloud link or an mp3 upload. We're working on a fix!")
                 raise ProcessingError(f"Audio download failed: {error_msg}", format_resync_error(error_msg))
 
             # Get durations for validation
@@ -1923,6 +1931,8 @@ def autoresyncmedia():
                         raise ProcessingError("VIDEO_NOT_FOUND", "🔗 Video not found or unavailable. Please check your video link.")
                     elif any(keyword in error_str for keyword in ['unsupported', 'no suitable formats']):
                         raise ProcessingError("VIDEO_UNSUPPORTED", "🔗 Unsupported video source or format. Please try a different video.")
+                    elif any(keyword in error_str for keyword in ['bot', 'authentication', 'cookies']):
+                        raise ProcessingError("COOKIES_ERROR", "⚠️ YouTube videos are temporarily unavailable due to authentication issues. Please try using a file upload or a different video source for now. We're working on a fix!")
                     else:
                         raise ProcessingError("VIDEO_ACCESS_FAILED", f"🔗 Could not access video: {str(e)}")
                 except Exception as e:
@@ -2051,6 +2061,8 @@ def autoresyncmedia():
 
             success, error_msg = download_audio(audio_url, audio_path, logger, cookiefile)
             if not success:
+                if any(keyword in error_msg for keyword in ['bot', 'authentication', 'cookies']):
+                    raise ProcessingError("COOKIES_ERROR", "⚠️ Spotify links are temporarily unavailable due to authentication issues. Please try using soundcloud link or an mp3 upload. We're working on a fix!")
                 raise ProcessingError(f"Audio download failed: {error_msg}", format_resync_error(error_msg))
 
             # Validate time ranges
@@ -2578,6 +2590,8 @@ def downloadvideo():
                         raise ProcessingError("VIDEO_NOT_FOUND", "🔗 Video not found or unavailable. Please check your video link.")
                     elif any(keyword in error_str for keyword in ['unsupported', 'no suitable formats']):
                         raise ProcessingError("VIDEO_UNSUPPORTED", "🔗 Unsupported video source or format. Please try a different video.")
+                    elif any(keyword in error_str for keyword in ['bot', 'authentication', 'cookies']):
+                        raise ProcessingError("COOKIES_ERROR", "⚠️ YouTube videos are temporarily unavailable due to authentication issues. Please try using a file upload or a different video source for now. We're working on a fix!")
                     else:
                         raise ProcessingError("VIDEO_ACCESS_FAILED", f"🔗 Could not access video: {str(e)}")
                 except Exception as e:
