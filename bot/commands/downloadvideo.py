@@ -108,6 +108,12 @@ def setup_downloadvideo(bot: commands.Bot):
                 "🎵 This doesn't look like a YouTube video link!\n"
                 "Make sure you copy the full video URL, not just the YouTube homepage."
             )
+        
+        for link, message in Config.INVALID_LINK_MESSAGES.items():
+            print(f"Iterating through video links..")
+            if link in video_url.lower():
+                raise ValidationError("Blacklisted link", message)
+
         # Validate video URL
         if not video_url.strip():
             raise ValidationError("Empty video URL", "🎥 Please provide a video URL")

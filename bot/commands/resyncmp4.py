@@ -101,6 +101,10 @@ def setup_resyncmp4(bot: commands.Bot):
                 f"🚫 File too large (max {max_mb}MB)"
             )
         
+        for link, message in Config.INVALID_LINK_MESSAGES.items():
+            if link in audio_url.lower():
+                raise ValidationError("Blacklisted link", message)
+
         # Validate audio URL
         if not audio_url or not audio_url.strip():
             raise ValidationError("Empty audio URL provided", "🔗 Please provide a valid audio URL")

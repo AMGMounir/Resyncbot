@@ -98,7 +98,16 @@ def setup_autoresyncmedia(bot: commands.Bot):
                 ephemeral=True
             )
             return     
-
+        
+        for link, message in Config.INVALID_LINK_MESSAGES.items():
+            print(f"Iterating through video links..")
+            if link in video_url.lower():
+                raise ValidationError("Blacklisted link", message)
+            
+        for link, message in Config.INVALID_LINK_MESSAGES.items():
+            if link in audio_url.lower():
+                raise ValidationError("Blacklisted link", message)
+             
         # Check for obviously invalid URLs
         if any(char in video_url for char in [" ", "<", ">", '"']):
             raise ValidationError("Invalid video URL characters", "🔗 Video URL contains invalid characters. Please check your link.")          

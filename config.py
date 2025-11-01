@@ -55,6 +55,17 @@ class Config:
     TOPGG_WEBHOOK_SECRET: str = os.getenv("TOPGG_WEBHOOK_SECRET", "")  # Webhook password
     TOPGG_BOT_ID: str = os.getenv("TOPGG_BOT_ID", "")  # Your bot's ID on Top.gg
 
+    INVALID_LINK_MESSAGES = {
+        "youtube.com": "YouTube links are no longer supported. To see supported links, use /supported",
+        "youtu.be": "YouTube links are no longer supported. To see supported links, use /supported",
+        "spotify.com": "Spotify links are no longer supported. To see supported links, use /supported",
+        "instagram.com": "Instagram links are no longer supported. To see supported links, use /supported",
+        "tiktok.com": "TikTok links are no longer supported. To see supported links, use /supported",
+        "facebook.com": "Facebook links are no longer supported. To see supported links, use /supported",
+        "x.com": "X (Twitter) links are no longer supported. To see supported links, use /supported",
+        "twitter.com": "Twitter links are no longer supported. To see supported links, use /supported"
+    }
+
     PREMIUM_ENABLED: bool = False
     @classmethod
     def validate(cls) -> bool:

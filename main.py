@@ -51,6 +51,8 @@ from bot.commands.premium_commands import setup_premium_commands, setup_limits_c
 from bot.commands.downloadaudio import setup_downloadaudio
 from bot.commands.downloadvideo import setup_downloadvideo
 from bot.commands.vote import setup_vote_command
+from bot.commands.supported import setup_supported
+
 """
 main.py
 
@@ -105,6 +107,8 @@ async def bot_safe_start():
     setup_downloadaudio(bot)
     setup_downloadvideo(bot)
     setup_vote_command(bot)
+    setup_supported(bot)
+    
     if Config.PREMIUM_ENABLED:
         setup_premium_commands(bot)    
     logger.info("🔍 Starting performance monitoring...")

@@ -116,6 +116,15 @@ def setup_resyncmedia(bot: commands.Bot):
             )
             return        
 
+        for link, message in Config.INVALID_LINK_MESSAGES.items():
+            print(f"Iterating through video links..")
+            if link in video_url.lower():
+                raise ValidationError("Blacklisted link", message)
+            
+        for link, message in Config.INVALID_LINK_MESSAGES.items():
+            if link in audio_url.lower():
+                raise ValidationError("Blacklisted link", message)
+            
         # Basic URL format validation with manual logging
         if not (video_url.startswith("http://") or video_url.startswith("https://")):
             safe_log_command(bot, interaction, "resyncmedia", {

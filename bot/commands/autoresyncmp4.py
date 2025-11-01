@@ -94,6 +94,10 @@ def setup_autoresyncmp4(bot: commands.Bot):
                 "📁 Please upload a valid video file (.mp4, .mov, .avi, .mkv)"
             )
         
+        for link, message in Config.INVALID_LINK_MESSAGES.items():
+            if link in audio_url.lower():
+                raise ValidationError("Blacklisted link", message)
+
         # Validate audio URL
         if not audio_url.strip():
             raise ValidationError("Empty audio URL", "🎵 Please provide an audio URL")

@@ -122,7 +122,11 @@ def setup_downloadaudio(bot: commands.Bot):
                     description=f"🎵 <@{interaction.user.id}> used `/downloadaudio`\n[🎵 Audio](<{audio_url}>)",
                     color=discord.Color.green()
                 )
-
+                    
+                for link, message in Config.INVALID_LINK_MESSAGES.items():
+                    if link in audio_url.lower():
+                        raise ValidationError("Blacklisted link", message)
+                    
                 # Send the audio file
                 file = discord.File(io.BytesIO(output_bytes), filename=filename)
 

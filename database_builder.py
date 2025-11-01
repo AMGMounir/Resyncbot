@@ -52,14 +52,14 @@ class DatabaseBuilder:
         if not Config.DATABASE_URL:
             raise ValueError("DATABASE_URL is empty or missing!")
 
-        conn = psycopg2.connect(Config.DATABASE_URL)
+        self.conn = psycopg2.connect(Config.DATABASE_URL)
         self.cursor = self.conn.cursor()
-        client_credentials_manager = SpotifyClientCredentials(
-            client_id=Config.SPOTIFY_CLIENT_ID,
-            client_secret=Config.SPOTIFY_CLIENT_SECRET
-        )
+        # client_credentials_manager = SpotifyClientCredentials(
+        #     client_id=Config.SPOTIFY_CLIENT_ID,
+        #     client_secret=Config.SPOTIFY_CLIENT_SECRET
+        # )
 
-        self.spotify = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
+        # self.spotify = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
     def insertTrack(self, data):
         insert_query = """
@@ -320,7 +320,17 @@ class DatabaseBuilder:
 if __name__ == "__main__":
     try:
         builder = DatabaseBuilder()
-
+        playlists = [
+            "https://soundcloud.com/user-861307605/sets/nostalgia-ultra",
+            "https://soundcloud.com/ari-ellingson/sets/mk-gee-1",
+            "https://soundcloud.com/user-454354738/sets/kpldhprqix8x",
+            "https://soundcloud.com/joel-jude-yepez/sets/toe-for-long-tomorrow",
+            "https://soundcloud.com/user-751060177/sets/salvia-path",
+            "https://soundcloud.com/ba-ed-krook/sets/some-typa-way?si=ef3aa158198c4047a0270b1cecde1906",
+            "https://soundcloud.com/user-215570450/sets/mitski",
+            "https://soundcloud.com/deceptive_expectations/sets/mitski-laurel-hell",
+            "https://soundcloud.com/raian-cma/sets/radiohead"
+        ]
         for playlist in playlists:
             link = builder.detectLink(playlist)
             if link == "spotify":
