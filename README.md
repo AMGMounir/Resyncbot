@@ -55,12 +55,6 @@ pip install -r requirements.txt
 - **Ubuntu/Debian**: `sudo apt install postgresql postgresql-contrib`
 - **Windows**: Download from [postgresql.org](https://www.postgresql.org/download/windows/)
 
-### 3. Set Up PostgreSQL Database
-
-**Install PostgreSQL:**
-- **macOS**: `brew install postgresql && brew services start postgresql`
-- **Ubuntu/Debian**: `sudo apt install postgresql postgresql-contrib`
-- **Windows**: Download from [postgresql.org](https://www.postgresql.org/download/windows/)
 
 **Create a PostgreSQL user and database:**
 
