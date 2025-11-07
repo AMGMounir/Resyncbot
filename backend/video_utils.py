@@ -1196,20 +1196,21 @@ def get_cookiefile_for_url(url: str) -> Optional[str]:
 def download_video_with_retry(url, ydl_opts, retries=2):
     """
     Download video with retry logic for transient failures
-    
+
     RETRY STRATEGY:
     - Attempt 1: Standard download with provided options
     - Attempt 2: If failed, try again (handles temporary network issues)
     - Instagram: If format fails, retry with most flexible format ('worst')
     - Cookies expired: Raise special error so user knows to update cookies
-    
+
     PLATFORM-SPECIFIC HANDLING:
-    - YouTube: Limited to 1080p to avoid 4K timeouts
+    - YouTube: Uses yt-dlp with best quality settings
     - Instagram: Extra flexible format selection + carousel support
     - TikTok: Redirected to dedicated TikTok handler
     """
     if "youtube.com" in url or "youtu.be" in url:
-        ydl_opts['format'] = 'bestvideo[height<=1080]+bestaudio[height<=1080]/best[height<=1080]'
+        # Use yt-dlp for YouTube downloads
+        ydl_opts['format'] = 'bestvideo[height<=1080]+bestaudio/best[height<=1080]/best'
 
     elif "instagram.com" in url:
         # Instagram-specific: be very flexible with formats
@@ -2278,13 +2279,13 @@ def download_audio_high_quality(audio_url: str, audio_path: str, logger, cookief
     """Download audio in the highest quality possible - no compression"""
     try:
         logger.info(f"🎵 HIGH QUALITY AUDIO DOWNLOAD: {audio_url}")
-        
+
         if "spotify.com/track/" in audio_url:
             return download_spotify_track(audio_url, audio_path, logger)
-        
+
         if 'youtube.com' in audio_url or 'youtu.be' in audio_url:
             audio_url = clean_youtube_url(audio_url)
-        
+
         if audio_url.endswith(".mp3"):
             r = requests.get(audio_url)
             r.raise_for_status()

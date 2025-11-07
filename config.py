@@ -10,7 +10,7 @@ class Config:
     PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
     # Bot configuration
     DISCORD_BOT_TOKEN: str = os.getenv("DISCORD_BOT_TOKEN", "")
-    BOT_OWNER_ID: int = int(os.getenv("BOT_OWNER_ID", "688590681731891240"))
+    BOT_OWNER_ID: int = int(os.getenv("BOT_OWNER_ID") or "688590681731891240")
 
     # API configuration
     RESYNC_API_BASE: str = os.getenv("RESYNC_API_BASE", "http://localhost:5000")
@@ -24,8 +24,8 @@ class Config:
     RESYNC_API_SECRET: str = "e2fd48a6f471431ea9e"
 
     # Discord channels
-    LOG_CHANNEL_ID: int = int(os.getenv("LOG_CHANNEL_ID", "1400257461142687827"))
-    UPDATE_CHANNEL_ID: int = int(os.getenv("UPDATE_CHANNEL_ID", "1396262434146095246"))
+    LOG_CHANNEL_ID: int = int(os.getenv("LOG_CHANNEL_ID") or "1400257461142687827")
+    UPDATE_CHANNEL_ID: int = int(os.getenv("UPDATE_CHANNEL_ID") or "1396262434146095246")
     
     # Processing limits
     MAX_FILE_SIZE: int = 100 * 1024 * 1024  # 200MB
@@ -49,18 +49,17 @@ class Config:
     LIFETIME_PREMIUM_PRICE: int = 25 # in usd
     RANDOM_LIMITS: int = 8
     AUTO_LIMITS: int = 4
-    COOLDOWN: int = 25
+    COOLDOWN: int = 15
     
     TOPGG_TOKEN: str = os.getenv("TOPGG_TOKEN", "")  # Bot token from Top.gg
     TOPGG_WEBHOOK_SECRET: str = os.getenv("TOPGG_WEBHOOK_SECRET", "")  # Webhook password
     TOPGG_BOT_ID: str = os.getenv("TOPGG_BOT_ID", "")  # Your bot's ID on Top.gg
 
     INVALID_LINK_MESSAGES = {
-        "youtube.com": "YouTube links are no longer supported. To see supported links, use /supported",
-        "youtu.be": "YouTube links are no longer supported. To see supported links, use /supported",
-        "spotify.com": "Spotify links are no longer supported. To see supported links, use /supported",
-        "instagram.com": "Instagram links are no longer supported. To see supported links, use /supported",
-        "tiktok.com": "TikTok links are no longer supported. To see supported links, use /supported",
+        # "youtube.com": "YouTube links are no longer supported. To see supported links, use /supported",
+        # "youtu.be": "YouTube links are no longer supported. To see supported links, use /supported",
+        # "instagram.com": "Instagram links are no longer supported. To see supported links, use /supported",
+        # "tiktok.com": "TikTok links are no longer supported. To see supported links, use /supported",
         "facebook.com": "Facebook links are no longer supported. To see supported links, use /supported",
         "x.com": "X (Twitter) links are no longer supported. To see supported links, use /supported",
         "twitter.com": "Twitter links are no longer supported. To see supported links, use /supported"

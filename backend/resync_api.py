@@ -682,7 +682,7 @@ def resyncmedia():
                     elif any(keyword in error_str for keyword in ['bot', 'authentication', 'cookies']):
                         raise ProcessingError("COOKIES_ERROR", "⚠️ YouTube videos are temporarily unavailable due to authentication issues. Please try using a file upload or a different video source for now. We're working on a fix!")
                     else:
-                        raise ProcessingError("VIDEO_ACCESS_FAILED", f"🔗 Could not access video: {str(e)}")
+                        raise ProcessingError("VIDEO_ACCESS_FAILED", f"🔗 Could not access video: {str(e)} | Full error: {error_str[:500]}")
                 except Exception as e:
                     logger.warning(f"⚠️ Duration check failed: {e}")
                     raise ProcessingError("VIDEO_VALIDATION_FAILED", "🔗 Invalid video URL or could not validate video. Please check your video link.")
@@ -709,7 +709,7 @@ def resyncmedia():
             # Configure yt-dlp options
             # These settings optimize for quality while avoiding YouTube restrictions
             ydl_opts = {
-                'format': 'bestvideo[height<=1080]+bestaudio[height<=1080]/best[height<=1080]', # Select best quality up to 1080p
+                'format': 'bestvideo[height<=1080]+bestaudio/best[height<=1080]/best', # Select best quality up to 1080p with fallbacks
                 'outtmpl': video_path, # Bypass age restrictions using cookies
                 'merge_output_format': 'mp4',
                 'noplaylist': True,
@@ -717,7 +717,7 @@ def resyncmedia():
                 'no_warnings': True,
                 'postprocessors': [{'key': 'FFmpegVideoConvertor', 'preferedformat': 'mp4'}],
                 'ffmpeg_location': shutil.which("ffmpeg") or "/usr/bin/ffmpeg",
-                
+
                 # Age / Geo bypass stuff
                 'age_limit': 99,              # Bypass age restrictions
                 'geo_bypass': True,           # Bypass geo-restrictions
@@ -728,8 +728,9 @@ def resyncmedia():
                     }
                 },
 
+                # headers for yt-dlp DO NOT CHANGE
                 'http_headers': {
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
                     'Accept-Language': 'en-US,en;q=0.9',
                     'Accept-Encoding': 'gzip, deflate',
                     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -1181,7 +1182,7 @@ def resyncrandommedia():
                     elif any(keyword in error_str for keyword in ['bot', 'authentication', 'cookies']):
                         raise ProcessingError("COOKIES_ERROR", "⚠️ YouTube videos are temporarily unavailable due to authentication issues. Please try using a file upload or a different video source for now. We're working on a fix!")
                     else:
-                        raise ProcessingError("VIDEO_ACCESS_FAILED", f"🔗 Could not access video: {str(e)}")
+                        raise ProcessingError("VIDEO_ACCESS_FAILED", f"🔗 Could not access video: {str(e)} | Full error: {error_str[:500]}")
                 except Exception as e:
                     logger.warning(f"⚠️ Duration check failed: {e}")
                     raise ProcessingError("VIDEO_VALIDATION_FAILED", "🔗 Invalid video URL or could not validate video. Please check your video link.")
@@ -1204,7 +1205,7 @@ def resyncrandommedia():
             
             # Configure yt-dlp options
             ydl_opts = {
-                'format': 'bestvideo[height<=1080]+bestaudio[height<=1080]/best[height<=1080]',
+                'format': 'bestvideo[height<=1080]+bestaudio/best[height<=1080]/best',
                 'outtmpl': video_path,
                 'merge_output_format': 'mp4',
                 'noplaylist': True,
@@ -1212,16 +1213,27 @@ def resyncrandommedia():
                 'no_warnings': True,
                 'postprocessors': [{'key': 'FFmpegVideoConvertor', 'preferedformat': 'mp4'}],
                 'ffmpeg_location': shutil.which("ffmpeg") or "/usr/bin/ffmpeg",
-                
+
                 # Age / Geo bypass stuff
                 'age_limit': 99,              # Bypass age restrictions
-                'geo_bypass': True,   
+                'geo_bypass': True,
                 'geo_bypass_country': 'US',   # Pretend to be from US
                 'extractor_args': {
                     'youtube': {
                         'skip': ['hls', 'dash'],  # Sometimes helps with restricted content
                     }
                 },
+
+                # Basic headers for yt-dlp
+                'http_headers': {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+                    'Accept-Language': 'en-US,en;q=0.9',
+                    'Accept-Encoding': 'gzip, deflate',
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                    'Connection': 'keep-alive',
+                    'Upgrade-Insecure-Requests': '1',
+                },
+
                 # Some checks that might trigger restrictions:
                 'writesubtitles': False,
                 'writeautomaticsub': False,
@@ -1934,7 +1946,7 @@ def autoresyncmedia():
                     elif any(keyword in error_str for keyword in ['bot', 'authentication', 'cookies']):
                         raise ProcessingError("COOKIES_ERROR", "⚠️ YouTube videos are temporarily unavailable due to authentication issues. Please try using a file upload or a different video source for now. We're working on a fix!")
                     else:
-                        raise ProcessingError("VIDEO_ACCESS_FAILED", f"🔗 Could not access video: {str(e)}")
+                        raise ProcessingError("VIDEO_ACCESS_FAILED", f"🔗 Could not access video: {str(e)} | Full error: {error_str[:500]}")
                 except Exception as e:
                     logger.warning(f"⚠️ Duration check failed: {e}")
                     raise ProcessingError("VIDEO_VALIDATION_FAILED", "🔗 Invalid video URL or could not validate video. Please check your video link.")
@@ -1955,9 +1967,9 @@ def autoresyncmedia():
                     
             # Download video (same logic as resyncmedia)
             edit_progress(token, app_id, message_id, "📥 Downloading video... (30%)")
-            
+
             ydl_opts = {
-                'format': 'bestvideo[height<=1080]+bestaudio[height<=1080]/best[height<=1080]',
+                'format': 'bestvideo[height<=1080]+bestaudio/best[height<=1080]/best',
                 'outtmpl': video_path,
                 'merge_output_format': 'mp4',
                 'noplaylist': True,
@@ -1968,13 +1980,24 @@ def autoresyncmedia():
 
                 # Age / Geo bypass stuff
                 'age_limit': 99,              # Bypass age restrictions
-                'geo_bypass': True,   
+                'geo_bypass': True,
                 'geo_bypass_country': 'US',   # Pretend to be from US
                 'extractor_args': {
                     'youtube': {
                         'skip': ['hls', 'dash'],  # Sometimes helps with restricted content
                     }
                 },
+
+                # Basic headers for yt-dlp
+                'http_headers': {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+                    'Accept-Language': 'en-US,en;q=0.9',
+                    'Accept-Encoding': 'gzip, deflate',
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                    'Connection': 'keep-alive',
+                    'Upgrade-Insecure-Requests': '1',
+                },
+
                 # Some checks that might trigger restrictions:
                 'writesubtitles': False,
                 'writeautomaticsub': False,
@@ -2593,7 +2616,7 @@ def downloadvideo():
                     elif any(keyword in error_str for keyword in ['bot', 'authentication', 'cookies']):
                         raise ProcessingError("COOKIES_ERROR", "⚠️ YouTube videos are temporarily unavailable due to authentication issues. Please try using a file upload or a different video source for now. We're working on a fix!")
                     else:
-                        raise ProcessingError("VIDEO_ACCESS_FAILED", f"🔗 Could not access video: {str(e)}")
+                        raise ProcessingError("VIDEO_ACCESS_FAILED", f"🔗 Could not access video: {str(e)} | Full error: {error_str[:500]}")
                 except Exception as e:
                     logger.warning(f"⚠️ Duration check failed: {e}")
                     raise ProcessingError("VIDEO_VALIDATION_FAILED", "🎥 Invalid video URL or could not validate video. Please check your video link.")
@@ -2606,11 +2629,11 @@ def downloadvideo():
             if quality == "best":
                 format_selector = "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best"
             elif quality == "1080p":
-                format_selector = "bestvideo[ext=mp4][height<=1080]+bestaudio[ext=m4a]/best[ext=mp4][height<=1080]/best[height<=1080]"
+                format_selector = "bestvideo[ext=mp4][height<=1080]+bestaudio[ext=m4a]/bestvideo[height<=1080]+bestaudio/best[height<=1080]/best"
             elif quality == "720p":
-                format_selector = "bestvideo[ext=mp4][height<=720]+bestaudio[ext=m4a]/best[ext=mp4][height<=720]/best[height<=720]"
+                format_selector = "bestvideo[ext=mp4][height<=720]+bestaudio[ext=m4a]/bestvideo[height<=720]+bestaudio/best[height<=720]/best"
             elif quality == "480p":
-                format_selector = "bestvideo[ext=mp4][height<=480]+bestaudio[ext=m4a]/best[ext=mp4][height<=480]/best[height<=480]"
+                format_selector = "bestvideo[ext=mp4][height<=480]+bestaudio[ext=m4a]/bestvideo[height<=480]+bestaudio/best[height<=480]/best"
             else:
                 format_selector = "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best"
 
@@ -2631,6 +2654,16 @@ def downloadvideo():
                     'preferedformat': 'mp4',
                 }],
                 'ffmpeg_location': shutil.which("ffmpeg") or "/usr/bin/ffmpeg",
+
+                # Basic headers for yt-dlp
+                'http_headers': {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+                    'Accept-Language': 'en-US,en;q=0.9',
+                    'Accept-Encoding': 'gzip, deflate',
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                    'Connection': 'keep-alive',
+                    'Upgrade-Insecure-Requests': '1',
+                },
             }
 
             cookiefile = get_cookiefile_for_url(video_url)
