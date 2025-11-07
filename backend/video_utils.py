@@ -497,7 +497,7 @@ def get_audio_download_options(audio_url: str, output_path: str, format_id: str 
             base_opts['format'] = 'bestaudio/best'
     else:
         base_opts.update({
-            'cookiefile': Config.COOKIE_FILE,
+            # 'cookiefile': Config.COOKIE_FILE,  # Disabled for production - uses personal cookies
             'format': 'bestaudio/best',
             'extract_audio': True,
             'audio_format': 'mp3',
@@ -674,9 +674,9 @@ async def download_audio_with_fallback(audio_url: str, output_path: str, logger_
             }]
         }
 
-        if cookiefile:
-            opts['cookiefile'] = cookiefile
-            logger_obj.info(f"🍪 Using cookies for audio download: {cookiefile}")
+        # if cookiefile:  # Disabled for production - uses personal cookies
+        #     opts['cookiefile'] = cookiefile
+        #     logger_obj.info(f"🍪 Using cookies for audio download: {cookiefile}")
         return opts
     
     fallback_formats = [
@@ -1171,26 +1171,24 @@ def is_valid_video_file(path: str, logger=None) -> bool:
 def get_cookiefile_for_url(url: str) -> Optional[str]:
     """
     Return path to cookies.txt if the URL requires authentication
-    
-    COOKIES ARE NEEDED FOR:
+
+    COOKIES ARE DISABLED FOR PRODUCTION (uses personal cookies)
+
+    COOKIES WOULD BE NEEDED FOR:
     - Age-restricted YouTube videos
     - Private/unlisted content
     - Some Instagram content
     - Login-required SoundCloud tracks
-    
-    Cookies are stored in data/cookies.txt (ignored by git)
-    Export cookies from your browser using a cookies.txt extension
-    
-    Returns:
-        str: Absolute path to cookies file, or None if not needed/not found
+
+    To re-enable: uncomment the code below and use burner account cookies
     """
-    if any(domain in url for domain in ["youtube.com", "youtu.be", "instagram.com",  'soundcloud.com']):
-        cookie_path = Path(Config.COOKIE_FILE)
-        if cookie_path.exists():
-            logger.info(f"🍪 Using cookiefile: {cookie_path}")
-            return str(cookie_path)
-        else:
-            logger.warning(f"⚠️ Cookie file not found at {cookie_path}")
+    # if any(domain in url for domain in ["youtube.com", "youtu.be", "instagram.com",  'soundcloud.com']):
+    #     cookie_path = Path(Config.COOKIE_FILE)
+    #     if cookie_path.exists():
+    #         logger.info(f"🍪 Using cookiefile: {cookie_path}")
+    #         return str(cookie_path)
+    #     else:
+    #         logger.warning(f"⚠️ Cookie file not found at {cookie_path}")
     return None
 
 def download_video_with_retry(url, ydl_opts, retries=2):
@@ -1476,10 +1474,10 @@ def download_audio_from_database(song_title: str, uploader: str, platform: str, 
         if platform == "soundcloud":
             logger.info(f"🎵 Searching SoundCloud for: '{song_title}' by '{uploader}'")
             
-            # Get cookiefile for SoundCloud
-            cookiefile = get_cookiefile_for_url("https://soundcloud.com")
-            logger.info(f"🍪 Using SoundCloud cookiefile: {cookiefile}")
-            
+            # Get cookiefile for SoundCloud - DISABLED for production
+            # cookiefile = get_cookiefile_for_url("https://soundcloud.com")
+            # logger.info(f"🍪 Using SoundCloud cookiefile: {cookiefile}")
+
             song_settings = {
                 'format': 'bestaudio[ext=mp3]/bestaudio',
                 'outtmpl': output_path.replace('.mp3', ''),
@@ -1489,16 +1487,16 @@ def download_audio_from_database(song_title: str, uploader: str, platform: str, 
                     'preferredquality': '192',
                 }],
                 'quiet': True,
-                'cookiefile': cookiefile  # Add cookiefile support
+                # 'cookiefile': cookiefile  # Disabled for production
             }
             
             # Search by name + artist only
             search_query = f"{song_title} {uploader}"
             
             search_settings = {
-                'quiet': True, 
+                'quiet': True,
                 'extract_flat': True,
-                'cookiefile': cookiefile  # Add cookiefile to search too
+                # 'cookiefile': cookiefile  # Disabled for production
             }
             search_sc = YoutubeDL(search_settings)
             
@@ -1542,7 +1540,7 @@ def download_audio_from_database(song_title: str, uploader: str, platform: str, 
                     'preferredcodec': 'mp3',
                     'preferredquality': '192',
                 }],
-                'cookiefile': Config.COOKIE_FILE if hasattr(Config, 'COOKIE_FILE') else None,
+                # 'cookiefile': Config.COOKIE_FILE if hasattr(Config, 'COOKIE_FILE') else None,  # Disabled for production
                 'quiet': True,
                 'no_warnings': True,
             }
@@ -1945,7 +1943,7 @@ def download_spotify_track(spotify_url: str, audio_path: str, logger):
                     'preferredcodec': 'mp3',
                     'preferredquality': '192',
                 }],
-                'cookiefile': Config.COOKIE_FILE if hasattr(Config, 'COOKIE_FILE') else None,
+                # 'cookiefile': Config.COOKIE_FILE if hasattr(Config, 'COOKIE_FILE') else None,  # Disabled for production
                 'quiet': True,
                 'no_warnings': True,
             }
@@ -2308,9 +2306,9 @@ def download_audio_high_quality(audio_url: str, audio_path: str, logger, cookief
                 'no_warnings': True,
             }
             
-            if cookiefile:
-                ydl_opts['cookiefile'] = cookiefile
-                logger.info(f"🍪 Using cookies for high-quality audio download")
+            # if cookiefile:  # Disabled for production - uses personal cookies
+            #     ydl_opts['cookiefile'] = cookiefile
+            #     logger.info(f"🍪 Using cookies for high-quality audio download")
             
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 ydl.download([audio_url])

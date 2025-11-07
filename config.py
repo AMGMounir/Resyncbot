@@ -49,7 +49,7 @@ class Config:
     LIFETIME_PREMIUM_PRICE: int = 25 # in usd
     RANDOM_LIMITS: int = 8
     AUTO_LIMITS: int = 4
-    COOLDOWN: int = 15
+    COOLDOWN: int = 0
     
     TOPGG_TOKEN: str = os.getenv("TOPGG_TOKEN", "")  # Bot token from Top.gg
     TOPGG_WEBHOOK_SECRET: str = os.getenv("TOPGG_WEBHOOK_SECRET", "")  # Webhook password

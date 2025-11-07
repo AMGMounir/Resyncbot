@@ -39,10 +39,14 @@ This prevents unauthorized access to processing endpoints.
 HOW IT WORKS:
 =============
 1. Bot sends request to API endpoint with media files/URLs
-2. API downloads media using yt-dlp (with cookies for age-restricted content)
+2. API downloads media using yt-dlp (cookies disabled for production)
 3. API processes media with FFmpeg (trim, extract audio, detect BPM, sync)
 4. API combines video + audio and returns processed file
 5. Bot receives file and uploads to Discord
+
+NOTE: Cookie authentication is DISABLED for production to avoid using personal account
+credentials. Age-restricted content will not be accessible. See video_utils.py
+get_cookiefile_for_url() to re-enable with burner account cookies.
 
 DEPENDENCIES:
 =============
